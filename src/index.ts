@@ -9,15 +9,18 @@ app.get("/", () => "Hello Elysia");
 app.get("/:id", async ({ params: { id } }) => {
   try {
     const transcriptList: TranscriptList = await fetchTranscriptList(id);
-    console.log("TranscriptList:", transcriptList.toString());
 
     const transcript: Transcript = transcriptList.findTranscript(["en"]);
-    console.log("Transcript:", transcript.toString());
 
     const actualTranscript = await transcript.fetch();
-    console.log("Actual Transcript:", actualTranscript);
 
-    return actualTranscript;
+    let completedTranscript = ""
+
+    for (const line of actualTranscript) {
+      completedTranscript += line.text + " ";
+    }
+
+    return completedTranscript;
   } catch (error) {
     console.error("Error fetching transcript:", error);
     throw new Error("Failed to fetch transcript");
